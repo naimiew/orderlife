@@ -1,0 +1,16 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+{% block content %}
+    <h1>{{ environment }}>>>银行卡绑定结果</h1>
+    {% for bcl in showbcl %}
+        <p>银行卡号:<b style="color:Crimson">{{ bcl.card_no }}</b>,
+            开户行:{{ bcl.bank }}&emsp;&emsp;
+            预留手机号:<b
+                    style="color:Crimson">{{ bcl.phone }}</b>,&emsp;&emsp;
+            绑卡时间:{{ bcl.bind_time }}&emsp;&emsp;
+            默认放款卡:{{ bcl.default_pay }}&emsp;&emsp;
+            默认还款卡:{{ bcl.default_repay }}&emsp;&emsp;
+            创建时间:{{ bcl.gmt_create }}&emsp;&emsp;
+        </p>
+    {% endfor %}
+{% endblock %}

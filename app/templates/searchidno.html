@@ -1,0 +1,17 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ environment }}>>>身份证 id_no</h1>
+    <form action="" method="post" name="id_no">
+        {{ form.hidden_tag() }}
+        <p>
+            填个身份证呗(id_no):<br>
+            {{ form.idno(size=80) }}<br>
+            {% for error in form.idno.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}<br>
+        </p>
+        <p><input type="submit" value="search"></p>
+    </form>
+{% endblock %}

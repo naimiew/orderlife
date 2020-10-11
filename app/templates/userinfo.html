@@ -1,0 +1,282 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+{% block content %}
+    <h1>{{ environment }}>>>订单的前半生：用户信息</h1>
+    {% if showuio or showtono or showupd or showcad or showcai or showcacd or showbcl %}
+        {{ show_sql_str_user_id }}<br>
+        {% for foo in showuio %}
+            {% if showuio[loop.index0] %}
+                <p>
+                    用户编号user_id:<b style="color:Crimson">{{ foo.id }}</b>,&emsp;&emsp;&emsp;&emsp;&emsp;
+                    注册时间regist_time:{{ foo.regist_time }}&emsp;&emsp;&emsp;&emsp;
+                    渠道？channel_id:{{ foo.channel_id }}<br>
+                    手机号码login_name:{{ foo.login_name }},&emsp;
+                    用户来源source:<b
+                        style="color:Crimson">{{ foo.source }}||{{ foo.product_code }}||{{ foo.product_name }}</b><br>
+                </p>
+            {% else %}
+                <p>🍭用户数据缺失🍭</p>
+            {% endif %}
+            {% if showjrl %}
+                {{ show_sql_str_jdcredit_req_log }}<br>
+                {% for jrl in showjrl %}
+                    风控订单标识:<b style="color:Crimson">{{ jrl.order_no }}</b>,&emsp;&emsp;
+                    风控类型:&emsp;<b
+                        style="color:Crimson">{{ jrl.req_type }}</b>【1=授信，2=提额】&emsp;&emsp;
+                    风控推送状态:&emsp;<b
+                        style="color:Crimson">{{ jrl.state }}</b>【0=初始化 1=已发送 2=发送失败 3=回调成功 4=取消】<br>
+                    风控返回授信状态:&emsp;<b
+                        style="color:Crimson">{{ jrl.resp_state }}</b>【0初始化，1通过，2拒绝】&emsp;
+                    请求来源:{{ jrl.channel_source }}【app或h5】&emsp;
+                    审核类型:&emsp;<b
+                        style="color:Crimson">{{ jrl.audit_type }}</b>【1机审 2人工】<br>
+                    风控响应参数:{{ jrl.resp_params }}<br>
+                {% endfor %}
+            {% else %}
+                <p>🍭没到风控🍭</p>
+            {% endif %}
+            {% if showcad[0] %}
+                {{ show_sql_str_credit_account_data }}<br>
+                <p>总额度:<b style="color:Crimson">{{ showcad[0].total_amount }}</b>&emsp;
+                    冻结额度:<b
+                            style="color:Blue">{{ showcad[0].frozen_amount }}</b>&emsp;
+                    占用额度:<b
+                            style="color:Black">{{ showcad[0].occupy_amount }}</b>&emsp;
+                    可用额度:<b
+                            style="color:ForestGreen">{{ showcad[0].available_amount }}</b>&emsp;&emsp;&emsp;
+                    额度创建时间:{{ showcad[0].gmt_create }}&emsp;&emsp;&emsp;
+                    额度来源:{{ showcad[0].product_id }}||{{ showcad[0].platform_code }}||{{ showcad[0].product_code }}||{{ showcad[0].product_name }}<br></p>
+                    风险定价json串:{{ showcad[0].risk_make_price }}
+                <p>
+                    {{ show_sql_str_credit_account_info }}<br>
+                    {% for exd in showcai %}
+                        额度有效期及状态:<b style="color:Crimson">{{ exd.expire_date }}</b>==
+                        <b style="color:Crimson">{{ exd.timing_flag }}</b>【1有效，2失效】&emsp;&emsp;
+                        账户额度:{{ exd.amount }}&emsp;&emsp;
+                        账户额度类型:{{ exd.type }}【1基础额度，2临时额度】<br>
+                    {% endfor %}
+                </p>
+            {% else %}
+                <p>🍭风控数据缺失🍭</p>
+            {% endif %}
+            {% if showbcl %}
+                {{ show_sql_str_bank_card_list }}<br>
+                {% for bcinfo in showbcl %}
+                    <form action="updatebindcard" method="post" name={{ bcinfo.card_no }}>
+                        银行卡号:<b style="color:Crimson">{{ bcinfo.card_no }}</b>,
+                        开户行:{{ bcinfo.bank }}&emsp;&emsp;
+                        预留手机号:<b
+                            style="color:Crimson">{{ bcinfo.phone }}</b>,&emsp;&emsp;
+                        绑卡时间:{{ bcinfo.bind_time }}&emsp;&emsp;
+                        默认放款卡:{{ bcinfo.default_pay }}&emsp;&emsp;
+                        默认还款卡:{{ bcinfo.default_repay }}&emsp;&emsp;
+                        创建时间:{{ bcinfo.gmt_create }}&emsp;&emsp;
+                        <input type="hidden" name="card_no" value={{ bcinfo.card_no }}>
+                        <input type="hidden" name="user_id" value={{ bcinfo.user_id }}>
+                        <input type="hidden" name="phone" value={{ bcinfo.phone }}>
+                        <input type="submit" name="submitname" value=设置为默认卡></form>
+                    <p></p>
+                {% endfor %}
+            {% else %}
+                <p>🍭绑卡数据缺失🍭</p>
+            {% endif %}
+            {% if showdri %}
+                {{ show_sql_depository_register_info }}<br>
+                {% for dri in showdri %}
+                    <p>
+                        存管渠道:{{ dri.depository_channel }}&emsp;
+                        身份证号:{{ dri.id_no }}&emsp;
+                        手机号:{{ dri.phone }}&emsp;
+                        银行卡号:{{ dri.card_no }}&emsp;
+                        银行编码:{{ dri.bank_code }}&emsp;
+                        用户类型:{{ dri.user_type }}&emsp;
+                        审核状态:{{ dri.audit_status }}&emsp;
+                        用户状态:{{ dri.user_status }}&emsp;
+                        是否有效:{{ dri.is_enable }}&emsp;
+                        创建时间:{{ dri.gmt_create }}<br>
+                        公司主体:{{ dri.company_main_body }}&emsp;
+                        注册结果返回类型:{{ dri.return_type }}&emsp;
+                        通知注册结果时间:{{ dri.notify_time }}&emsp;
+                        响应码~调用状态:{{ dri.resp_code }}&emsp;
+                        响应状态~业务处理状态:{{ dri.resp_status }}&emsp;
+                        错误描述:{{ dri.error_message }}&emsp;
+                        申请存管渠道:{{ dri.depository_channel }}
+                    </p>
+                {% endfor %}
+            {% else %}
+                <p>🍭开户数据缺失🍭</p>
+            {% endif %}
+            {% if showtono %}
+                {{ show_sql_str_third_order_info }}<br>
+                {{ show_sql_str_user_push_data }}<br>
+                三方订单状态说明【0信息待完善 1已处理 2待处理 3处理中 4已取消 5处理失败 10待授信 11授信中 12待用款确认】<br>
+                {% for upd in showupd %}
+                    {% for i in range(updlen) %}
+                        {% if showtono[i] %}
+                            {% if showtono[i].data_id == upd.id %}
+                                三方订单:<b
+                                    style="color:Crimson">{{ showtono[i].third_order_no }}</b>,
+                                订单状态:<b
+                                    style="color:Crimson">{{ showtono[i].process_status }}</b>&emsp;
+                                数据id:{{ showtono[i].data_id }}
+                                数据状态:<b
+                                    style="color:Crimson">{{ showtono[i].data_state }}</b>【1已完成】
+                                资金方:<b
+                                    style="color:Crimson">{{ showtono[i].fund_code }}</b>&emsp;
+                                我方订单:<b
+                                    style="color:Crimson">{{ showtono[i].order_no }}</b>,
+                                状态
+                                {% if showtono[i].state %}【<b style="color:Crimson">{{ showtono[i].state }}</b>】
+                                {% else %}【空】{% endif %}
+                                创建时间:{{ showtono[i].gmt_create }}
+                                订单来源:{{ showtono[i].source }}
+                                ||{{ showtono[i].product_code }}||{{ showtono[i].product_name }}<br>
+                                一推数据{{ showtono[i].data_id }}:<input type="button" value="{{ upd.data }}"
+                                                                      onclick="window.location.href='http://jdfq-test-img.oss-cn-beijing.aliyuncs.com/bigStr/{{ upd.data }}'">
+                                &emsp;&emsp;&emsp;&emsp;
+                                二推数据{{ showtono[i].data_id }}:<input type="button" value="{{ upd.data2 }}"
+                                                                      onclick="window.location.href='http://jdfq-test-img.oss-cn-beijing.aliyuncs.com/bigStr/{{ upd.data2 }}'">
+                                <br>
+                            {% else %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            {% else %}
+                <p>🍭三方订单缺失🍭</p>
+            {% endif %}
+            {% if tonolen < updlen %}
+                <p>推送数据对应三方订单缺失，请排查</p>
+                {% for i in range(updlen) %}
+                    <p>一推数据{{ showupd[i].id }}:<input type="submit" value="{{ showupd[i].data }}"
+                                                       onclick="location.href='http://jdfq-test-img.oss-cn-beijing.aliyuncs.com/bigStr/{{ showupd[i].data }}'">&emsp;&emsp;&emsp;&emsp;
+                        二推数据{{ showupd[i].id }}:<input type="submit" value="{{ showupd[i].data2 }}"
+                                                        onclick="location.href='http://jdfq-test-img.oss-cn-beijing.aliyuncs.com/bigStr/{{ showupd[i].data2 }}'">
+                    </p>
+                {% endfor %}
+            {% endif %}
+            {% if showcacd %}
+                {{ show_sql_str_credit_account_change_detail }}<br>
+                类型说明【10首次授信、20授信、30用户提额、40系统提额、50借款、60放款、70还款、80基础额度失效、90临时额度失效】&emsp;&emsp;&emsp;变化类型【1增加，2减少，3不变】
+                <br>
+                <body>
+                <table>
+                    <tr>
+                        <th nowrap="">
+                            账户ID|
+                        </th>
+                        <th nowrap="">
+                            类型|
+                        </th>
+                        <th nowrap="">
+                            变化类型|
+                        </th>
+                        <th nowrap="">
+                            变化额度|
+                        </th>
+                        <th nowrap="">
+                            标注内容、备注
+                        </th>
+                        <th nowrap="">
+                            |冻结额度|
+                        </th>
+                        <th nowrap="">
+                            占用额度|
+                        </th>
+                        <th nowrap="">
+                            可用额度|
+                        </th>
+                        <th nowrap="">
+                            总额度|
+                        </th>
+                        <th nowrap="">
+                            基础额度|
+                        </th>
+                        <th nowrap="">
+                            临时额度|
+                        </th>
+                        <th nowrap="">
+                            创建时间
+                        </th>
+                        <th nowrap="">
+                            更新时间
+                        </th>
+                    </tr>
+                    {% for cacd_list_to_dict in showcacd %}
+                        <tr>
+                            <td class="bg">
+                                <div align="right">
+                                    {{ cacd_list_to_dict.user_credit_account_id }}|
+                                </div>
+                            </td>
+                            <td class="bg">
+                                <div align="right">
+                                    {{ cacd_list_to_dict.type }}|
+                                </div>
+                            </td>
+                            <td class="bg">
+                                <div align="right">
+                                    {{ cacd_list_to_dict.change_type }}|
+                                </div>
+                            </td>
+                            <td class="bg">
+                                <div align="right">
+                                    {{ cacd_list_to_dict.change_amount }}|
+                                </div>
+                            </td>
+                            <td class="bg">
+                                <div align="right">
+                                    {{ cacd_list_to_dict.remark }}|
+                                </div>
+                            </td>
+                            <td class="bg">
+                                <div align="right">
+                                    {{ cacd_list_to_dict.frozen_amount }}|
+                                </div>
+                            </td>
+                            <td class="bg">
+                                <div align="right">
+                                    {{ cacd_list_to_dict.occupy_amount }}|
+                                </div>
+                            </td>
+                            <td class="bg">
+                                <div align="right">
+                                    {{ cacd_list_to_dict.available_amount }}|
+                                </div>
+                            </td>
+                            <td class="bg">
+                                <div align="right">
+                                    {{ cacd_list_to_dict.total_amount }}|
+                                </div>
+                            </td>
+                            <td class="bg">
+                                <div align="right">
+                                    {{ cacd_list_to_dict.basics_amount }}|
+                                </div>
+                            </td>
+                            <td class="bg">
+                                <div align="right">
+                                    {{ cacd_list_to_dict.temporary_amount }}|
+                                </div>
+                            </td>
+                            <td class="bg">
+                                {{ cacd_list_to_dict.gmt_create }}|
+                            </td>
+                            <td class="bg">
+                                {{ cacd_list_to_dict.gmt_modified }}
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+                </table>
+                </body>
+            {% else %}
+                <p>🍭额度明细缺失🍭</p>
+            {% endif %}
+            <p>
+                🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷🌷</p>
+        {% endfor %}
+    {% else %}
+        <h1>🍭啥都没有🍭</h1>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,28 @@
+<html>
+<head>
+    {% if title %}
+        <title>{{ title }} - orderlife</title>
+    {% else %}
+        <title>Welcome to orderlife</title>
+    {% endif %}
+</head>
+<body>
+{% extends "base.html" %}
+{% block content %}
+    <h1>— ↑ — Please touch the button ：
+        {{ say.way }}</h1>
+    <h1>当前环境：{{ environment }}</h1>
+    <p>⚜测试后台:&emsp;<input type="button" value="test0X" onclick="window.location.href='http://openapi-tp-test01.jindanfenqi.com/?#/login?redirect=%2FopenapiConfig%2FsysConfig'"></p>
+    <p>⚜借点钱后台:<input type="button" value="点击跳转" onclick="window.location.href='http://27.115.20.250:29180/admin/readme'"></p>
+    <p>⚜北斗51后台:<input type="button" value="点击跳转" onclick="window.location.href='http://bdsandbox.dev.geinihua.com/#/test-case-list'"></p>
+    <p>⚜百融后台:&emsp;<input type="button" value="点击跳转" onclick="window.location.href='https://dymapi.xiaqiu.cn/dbclear/index?pid=10595|10613&18301457707'"></p>
+    <p>⚜借吧后台:&emsp;<input type="button" value="纯人工" onclick="window.location.href='http://www.baidu.com'"></p>
+    <p>⚜金额试算:&emsp;<input type="button" value="点击跳转" onclick="window.location.href='https://www.otouzi.com/product/profit'"></p>
+    <p>⚜业务--支付:<input type="button" value="点击跳转" onclick="window.location.href='http://47.93.15.60:8081/'">   账号：system|密码：123456|验证码：1234 |mock_bind_card_result</p>
+    <p>⚜业务--渠道:<input type="button" value="换IP" onclick="window.location.href='http://39.106.35.160:8081/'">   账号：system|密码：123456|验证码：1234</p>
+    <p>⚜定时任务:&emsp;<input type="button" value="换IP" onclick="window.location.href='http://39.106.35.160:8899/'">  账号：jdfq|密码：jdfqelastic</p>
+    <p>⚜风控后台:&emsp;<input type="button" value="点击跳转" onclick="window.location.href='https://cr-oss.jindanfenqi.com/admin/login'">自动化审单功能待开发，代理：123.56.0.179：6669|触发定时任务url：https://cr-oss.jindanfenqi.com/crontab_review/start</p>
+    <p>⚜风控数据:&emsp;<input type="button" value="点击跳转" onclick="window.location.href='http://39.105.139.128:8083/blazeCons/getOssFile?orderNo='"></p>
+{% endblock %}
+</body>
+</html>

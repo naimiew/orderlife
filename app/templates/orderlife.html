@@ -1,0 +1,506 @@
+<!-- extend from base layout -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="../static/jquery-1.8.3.min.js">
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(".update_repay_apply").click(function () {
+                $.ajax({
+                    url: "/update_repay_apply", data: {"third_order_no": '{{ showtoi[0].third_order_no }}' }, success: function (data) {
+                        alert(data);
+                    }
+                });
+            });
+            $(".update_borrow_state").click(function () {
+                state = $('#borrow_state').val();
+                $.ajax({
+                    url: "/update_borrow_state", data: {"third_order_no": '{{ showtoi[0].third_order_no }}', "borrow_state": state }, success: function (data) {
+                        alert(data);
+                    }
+                });
+            });
+            $(".update_repay_time").click(function () {
+                update_repay_time_day = $(this).prev().prev().val();
+                borrow_repay_id = $(this).prev().val();
+                $.ajax({
+                    url: "/update_repay_time", data: {"update_repay_time_day": update_repay_time_day,"third_order_no": '{{ showtoi[0].third_order_no }}', "borrow_repay_id": borrow_repay_id }, success: function (data) {
+                        alert(data);
+                    }
+                });
+            });
+            $(".update_mq_record_credit").click(function () {
+                mq_record_credit_id = $(this).prev().val();
+                $.ajax({
+                    url: "/update_mq_record_credit", data: {"third_order_no": '{{ showtoi[0].third_order_no }}', "mq_record_credit_id": mq_record_credit_id }, success: function (data) {
+                        alert(data);
+                    }
+                });
+            });
+            $(".update_mq_record_fico").click(function () {
+                mq_record_fico_id = $(this).prev().val();
+                $.ajax({
+                    url: "/update_mq_record_fico", data: {"third_order_no": '{{ showtoi[0].third_order_no }}', "mq_record_fico_id": mq_record_fico_id }, success: function (data) {
+                        alert(data);
+                    }
+                });
+            });
+            $(".update_mq_record_loan").click(function () {
+                mq_record_loan_id = $(this).prev().val();
+                $.ajax({
+                    url: "/update_mq_record_loan", data: {"third_order_no": '{{ showtoi[0].third_order_no }}', "mq_record_loan_id": mq_record_loan_id }, success: function (data) {
+                        alert(data);
+                    }
+                });
+            });
+            $(".update_cl_notify_callback").click(function () {
+                cl_notify_callback_id = $(this).prev().val();
+                $.ajax({
+                    url: "/update_cl_notify_callback", data: {"third_order_no": '{{ showtoi[0].third_order_no }}', "cl_notify_callback_id": cl_notify_callback_id }, success: function (data) {
+                        alert(data);
+                    }
+                });
+            });
+            $(".update_cl_notify_callback_re").click(function () {
+                cl_notify_callback_re_id = $(this).prev().val();
+                $.ajax({
+                    url: "/update_cl_notify_callback_re", data: {"third_order_no": '{{ showtoi[0].third_order_no }}', "cl_notify_callback_re_id": cl_notify_callback_re_id }, success: function (data) {
+                        alert(data);
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+{% extends "base.html" %}
+{% block content %}
+    <h1 >{{ environment }}>>>订单的后半生：订单信息<button class="update_repay_apply">还款提速</button></h1>
+    {% if showtoi %}
+        {% for toi in showtoi %}
+            <p>
+                {{ show_sql_str_third_order }}<br>
+                third_order_no:|<b style="color:Crimson"> {{ toi.third_order_no }}</b>,
+                order_no:<b style="color:Crimson"> {{ toi.order_no }}</b>,
+                用户ID:{{ toi.user_id }}&emsp;
+                订单来源:<b style="color:Crimson"> {{ toi.source }}||{{ toi.product_code }}||{{ toi.product_name }} </b>&emsp;
+                产品id:{{ toi.product_id }}
+                订单状态:<b style="color:Crimson"> {{ toi.process_status }} </b>
+                数据状态:<b style="color:Crimson"> {{ toi.data_state }} </b>&emsp;
+                创建时间:{{ toi.gmt_create }}&emsp;
+                资金方代码:<b style="color:Crimson"> {{ toi.fund_code }} </b><br>
+                认证信息json:{{ toi.auth_info }}&emsp;</p>
+        {% endfor %}
+    {% else %}
+        <p>无此订单</p>
+    {% endif %}
+    {% if showbow %}
+        <p>
+            {{ show_sql_str_borrow }}<br>
+            订单状态【0待推风控 10已推风控待审核 11风控审核中 12风控通过 13待放款 20放款中 21风控拒绝 27订单取消 30待还款 31放款失败 40已还款】综合费用(借款利息+服务费+信息认证费)
+            <input name="borrow_state" type="text" id="borrow_state" placeholder="状态" style="width:30px;height:20px;">
+            <button class="update_borrow_state">修改订单状态</button><br>
+            borrow_id:<b style="color:Crimson"> {{ showbow[0].id }}</b>,
+            订单号:{{ showbow[0].order_no }}&emsp;
+            订单状态:<b style="color:Crimson"> {{ showbow[0].state }} </b>&emsp;
+            借款金额:<b style="color:Crimson"> {{ showbow[0].amount }} </b>&emsp;
+            实际到账金额:<b style="color:Crimson"> {{ showbow[0].real_amount }} </b>&emsp;
+            借款期限:<b style="color:Crimson"> {{ showbow[0].time_limit }} </b>&emsp;
+            综合费用:<b style="color:Crimson"> {{ showbow[0].fee }} </b>&emsp;
+            服务费:{{ showbow[0].service_fee }}&emsp;
+            信息认证费:{{ showbow[0].info_auth_fee }}&emsp;
+            借款利息:<b style="color:Crimson"> {{ showbow[0].interest }} </b><br>
+            用户ID:{{ showbow[0].user_id }}&emsp;
+            收款银行卡关联id:{{ showbow[0].card_id }}&emsp;
+            渠道:{{ showbow[0].channel }}&emsp;
+            放款时间:{{ showbow[0].loan_time }}&emsp;
+            逾期罚金:{{ showbow[0].penalty_amout }}&emsp;
+            是否逾期:{{ showbow[0].is_overdue }}&emsp;
+            逾期标记:{{ showbow[0].overdue_tag }}&emsp;
+            订单生成时间:{{ showbow[0].create_time }}&emsp;
+            更新时间:{{ showbow[0].gmt_modified }}
+        </p>
+    {% else %}
+        <p>未生成borrow</p>
+    {% endif %}
+    {% if showbei %}
+        <p>
+            {{ show_sql_str_borrow_extended_info }}<br>
+            产品期限:<b style="color:Crimson"> {{ showbei[0].product_term }}
+            {% if showbei[0].term_unit == 1 %}日{% elif showbei[0].term_unit == 2 %}月
+            {% elif showbei[0].term_unit == 3 %}年
+            {% else %}未知{% endif %} </b>&emsp;
+            还款方式:<b style="color:Crimson"> {{ showbei[0].repay_way }}|
+            {% if showbei[0].repay_way == 1 %}一次性还本付息{% elif showbei[0].repay_way == 2 %}等本等息
+            {% elif showbei[0].repay_way == 3 %}等额本息{% elif showbei[0].repay_way == 4 %}等额本金
+            {% else %}未知{% endif %} </b>&emsp;
+            产品类型:<b style="color:Crimson"> {{ showbei[0].product_type }}|
+            {% if showbei[0].product_type == 1 %}PD{% elif showbei[0].product_type == 2 %}分期
+            {% else %}未知{% endif %} </b>
+            分期数:{{ showbei[0].phase_num }}&emsp;
+            本金收取账户:<b style="color:Crimson"> {{ showbei[0].principal_receive_account }} </b>&emsp;
+            本金逾期费率:{{ showbei[0].penalty_rate }}&emsp;
+            逾期费率上限:{{ showbei[0].penalty_max_rate }}<br>
+            创建时间:{{ showbei[0].gmt_create }}&emsp;
+            勾选pd7标识:{{ showbei[0].auto_borrow_flag }}&emsp;
+            更新时间:{{ showbei[0].gmt_modified }}&emsp;
+            逾期费用收取规则:{{ showbei[0].overdue_rule_no }}&emsp;
+            资金方代码:<b style="color:Crimson"> {{ showbei[0].fund_code }} </b><br>
+        <p>费用信息:{{ showbei[0].fees_info }}&emsp;</p>
+        <p>利息信息:{{ showbei[0].interest_info }}&emsp;</p>
+    {% else %}
+        <p>未生成borrow扩展信息</p>
+    {% endif %}
+    {% if showbr %}
+        <p>
+            {{ show_sql_str_borrow_repay }}<br>
+            {% for br in showbr %}
+                {{ br.borrow_id }}
+                期数:<b style="color:Crimson"> {{ br.phase_num }} </b>
+                状态:<b style="color:Crimson"> {{ br.state }}|
+                {% if br.state == '10' %}已还款{% elif br.state == '20' %}未还款
+                {% elif br.state == '11' %}部分还款
+                {% else %}未知{% endif %} </b>
+                类型:<b style="color:Crimson"> {{ br.repay_type }}|
+                {% if br.repay_code == 'SERVICE_RECOMMEND_FEE' %}服务{% elif br.repay_code == 'principal' %}本金
+                {% elif br.repay_code == 'interest' %}利息
+                {% else %}未知{% endif %} </b>
+                扣款:<b style="color:Crimson"> {{ br.deduct_way }}|
+                {% if br.deduct_way == 1 %}放款前{% elif br.deduct_way == 2 %}放款后
+                {% elif br.deduct_way == 3 %}到期日{% else %}未知{% endif %} </b>&emsp;
+                收款:<b style="color:Crimson"> {{ br.receive_account }} </b>&emsp;
+                还款:{{ br.amount }}&emsp;
+                原始:{{ br.actual_amount }}&emsp;
+                抵扣:{{ br.deduct_amount }}&emsp;
+                已还:{{ br.returned_amount }}&emsp;
+                应还:{{ br.repay_time }}&emsp;
+                逾期金:{{ br.penalty_amout }}&emsp;
+                逾期天:{{ br.penalty_day }}
+                <input name="update_repay_time_day" type="text" id= update_repay_time_day placeholder="天数" style="width:30px;height:20px;">
+                <input name="borrow_repay_id" type="hidden" id="borrow_repay_id" value= {{ br.id }} placeholder="编号">
+                <button class="update_repay_time">减应还日</button>
+                到期日:{{ br.repay_time }}<br>
+            {% endfor %}
+        </p>
+    {% else %}
+        <p>未生成borrowrepay</p>
+    {% endif %}
+    {% if showra %}
+        <p>
+            {{ show_sql_str_repay_apply }}<br>
+            {% for ra in showra %}
+                申请单号:<b style="color:Crimson"> {{ ra.apply_no }} </b>&emsp;
+                业务类型:<b style="color:Crimson"> {{ ra.type }}|
+                {% if ra.type == 1 %}还款代扣业务{% elif ra.type == 2 %}支付代扣业务
+                {% else %}未知{% endif %} </b>&emsp;
+                还款金额:{{ ra.ra_amount }}&emsp;
+                减免金额:{{ ra.deduct_amount }}&emsp;
+                申请确认受理时间:{{ ra.ra_accept_time }}&emsp;
+                申请的状态:<b style="color:Crimson"> {{ ra.ra_state }}|
+                {% if ra.ra_state == 10 %}未确认申请{% elif ra.ra_state == 20 %}已处理申请
+                {% elif ra.ra_state == 30 %}处理中{% elif ra.ra_state == 40 %}成功
+                {% elif ra.ra_state == 50 %}失败{% else %}未知{% endif %} </b>&emsp;
+                还款方式:<b style="color:Crimson"> {{ ra.repay_way }}|
+                {% if ra.repay_way == 1 %}主动还款{% elif ra.repay_way == 2 %}系统代扣
+                {% elif ra.repay_way == 3 %}催收扣款{% elif ra.repay_way == 4 %}补扣
+                {% elif ra.repay_way == 5 %}退还{% else %}未知{% endif %} </b>&emsp;
+                还款类型:<b style="color:Crimson"> {{ ra.repay_type }}|
+                {% if ra.repay_type == 10 %}正常还款{% elif ra.repay_type == 20 %}减免还款
+                {% elif ra.repay_type == 30 %}部分还款{% else %}未知{% endif %} </b><br>
+                成功金额注:{{ ra.ra_success_amount }}&emsp;
+                失败金额:{{ ra.ra_failed_amount }}&emsp;
+                处理中金额:{{ ra.ra_processing_amount }}&emsp;
+                申请备注:{{ ra.remark }}&emsp;
+                申请时间:{{ ra.ra_create_time }}&emsp;
+                更新时间:{{ ra.gmt_modified }}&emsp;
+                还款来源:<b style="color:Crimson"> {{ ra.repay_resource }}|
+                {% if ra.repay_resource == '10' %}代扣{% elif ra.repay_resource == '20' %}银行卡转账
+                {% elif ra.repay_resource == '30' %}支付宝转账{% elif ra.repay_resource == '40' %}快捷支付
+                {% elif ra.repay_resource == '50' %}展期支付{% elif ra.repay_resource == '60' %}三方支付宝支付
+                {% elif ra.repay_resource == '70' %}连资贷直还{% else %}未知{% endif %} </b>&emsp;
+                支付宝流水号:{{ ra.alipay_no }}<br>
+            {% endfor %}
+        </p>
+    {% else %}
+        <p>未生成repay_apply还款申请记录（包含用户主动还款、系统代扣、催收扣款）</p>
+    {% endif %}
+    {% if showbrd %}
+        <p>
+            {{ show_sql_str_borrow_repay_detail }}<br>
+            {% for brd in showbrd %}
+                {{ brd.borrow_id }}&emsp;
+                还款申请:{{ brd.apply_id }}&emsp;
+                期数:<b style="color:Crimson"> {{ brd.phase_num }} </b>&emsp;
+                类型:<b style="color:Crimson"> {{ brd.repay_type }}|
+                {% if brd.repay_code == 'SERVICE_RECOMMEND_FEE' %}服务{% elif brd.repay_code == 'principal' %}本金
+                {% elif brd.repay_code == 'interest' %}利息{% else %}未知{% endif %} </b>&emsp;
+                扣款方式:<b style="color:Crimson"> {{ brd.deduct_way }}|
+                {% if brd.deduct_way == 1 %}放款前{% elif brd.deduct_way == 2 %}放款后
+                {% elif brd.deduct_way == 3 %}到期日{% else %}未知{% endif %}  </b>&emsp;
+                当前支付:{{ brd.current_repay_amount }}&emsp;
+                应还款:{{ brd.should_repay_amount }}&emsp;
+                实际还款:{{ brd.returned_amount }}&emsp;
+                实际时间:{{ brd.actual_repay_time }}&emsp;
+                应还时间:{{ brd.should_repay_time }}<br>
+                逾期天数:{{ brd.penalty_day }}&emsp;
+                逾期罚金:{{ brd.penalty_amout }}&emsp;
+                当前还款逾期{{ brd.current_repay_penalty_amount }}&emsp;
+                减免:{{ brd.deduct_amount }}&emsp;
+                支付订单号:{{ brd.pay_order_no }}&emsp;
+                收款账户:<b style="color:Crimson"> {{ brd.receive_account }} </b>&emsp;
+                支付状态:<b style="color:Crimson"> {{ brd.state }}|
+                {% if brd.state == '1' %}未支付{% elif brd.state == '2' %}支付中
+                {% elif brd.state == '3' %}支付成功{% elif brd.state == '4' %}支付失败
+                {% else %}未知{% endif %} </b>&emsp;
+                支付结果描述:<b style="color:Crimson"> {{ brd.pay_result_des }}</b>&emsp;
+                创建时间:{{ brd.gmt_create }}
+                <br>
+            {% endfor %}
+        </p>
+    {% else %}
+        <p>未生成borrow_repay_detail</p>
+    {% endif %}
+    {% if showpa %}
+        <p>
+            {{ show_sql_str_pay_apply }}<br>
+            {% for pa in showpa %}
+                {{ pa.borrow_id }}&emsp;
+                借款订单号:<b style="color:Crimson"> {{ pa.order_no }}</b>,&emsp;
+                支付订单号号:<b style="color:Crimson"> {{ pa.pay_no }}</b>,&emsp;
+                申请单号:<b style="color:Crimson"> {{ pa.apply_no }}</b>,&emsp;
+                金额:{{ pa.amount }}&emsp;
+                支付状态:<b style="color:Crimson"> {{ pa.state }}|
+                {% if pa.state == 1 %}未支付{% elif pa.state == 2 %}支付中
+                {% elif pa.state == 3 %}支付成功{% elif pa.state == 4 %}支付失败
+                {% else %}未知{% endif %}</b>&emsp;
+                发起支付时间:{{ pa.pay_time }}&emsp;
+                申请备注:{{ pa.remark }}<br>
+                创建时间:{{ pa.gmt_create }}&emsp;
+                更新时间:{{ pa.gmt_modified }}&emsp;
+                资金方状态:<b style="color:Crimson"> {{ pa.fund_state }}|
+                {% if pa.fund_state == '0' %}不用提现{% elif pa.fund_state == '20' %}资金方放款中
+                {% elif pa.fund_state == '30' %}资金方放款成功{% elif pa.fund_state == '31' %}资金方放款失败
+                {% elif pa.fund_state == '40' %}提现成功{% elif pa.fund_state == '41' %}提前还款
+                {% else %}未知{% endif %}</b>&emsp;
+                资金方放款时间:{{ pa.fund_pay_time }}&emsp;
+                资金方代码:<b style="color:Crimson"> {{ pa.fund_code }}</b>&emsp;
+                ??{{ pa.fund_order_no }}<br>
+            {% endfor %}
+        </p>
+    {% else %}
+        <p>未生成pay_apply</p>
+    {% endif %}
+    {% if showp or showpf or showpir %}
+        {{ show_sql_str_product }}<br>
+        {{ show_sql_str_product_fee }}<br>
+        {% for p in showp %}
+            本金放款账户<b style="color:Crimson"> {{ p.principal_loan_account }}</b>&emsp;
+            本金收取账户<b style="color:Crimson"> {{ p.principal_receive_account }}</b>&emsp;<br>
+            {% for pf in showpf %}
+                收款账户<b style="color:Crimson"> {{ pf.fee_receive_account }}</b>&emsp;
+                资金方代码<b style="color:Crimson"> {{ pf.fund_code }}</b>&emsp;<br>
+            {% endfor %}
+        {% endfor %}
+    {% else %}
+        <p>查不到产品信息</p>
+    {% endif %}
+    {% if showfioi %}
+        <p>资金方进件放款验证记录表状态【0初始化 5风控审核失败 10待验证 20验证中 30已验证 40失败】<br>
+            {{ show_sql_str_fund_in_order_info }}<br>
+            {% for fioi in showfioi %}
+                请求编号:<b style="color:Crimson"> {{ fioi.request_no }}</b>&emsp;
+                用户 id:{{ fioi.user_id }}&emsp;
+                借款 id:<b style="color:Crimson"> {{ fioi.borrow_id }}</b>&emsp;
+                资金方代码:<b style="color:Crimson"> {{ fioi.fund_code }}</b>&emsp;
+                状态:<b style="color:Crimson"> {{ fioi.state }}|
+                {% if fioi.state == 0 %}初始化{% elif fioi.state == 5 %}风控审核失败
+                {% elif fioi.state == 10 %}待验证{% elif fioi.state == 20 %}验证中
+                {% elif fioi.state == 30 %}已验证{% elif fioi.state == 40 %}失败
+                {% else %}未知{% endif %}</b>&emsp;
+                验证过期时间:{{ fioi.validate_expire_time }}&emsp;
+                备注字段:<b style="color:Crimson"> {{ fioi.remark }}</b>&emsp;
+                创建时间:{{ fioi.gmt_create }}&emsp;
+                更新时间:{{ fioi.gmt_modified }}<br>
+            {% endfor %}
+        </p>
+    {% else %}
+        <p>未生成资金方进件放款验证记录表</p>
+    {% endif %}
+    {% if showpaq %}
+        <p>
+            {{ show_sql_str_policy_apply_qa }}<br>
+            {% for paq in showpaq %}
+                签约信息id:<b style="color:Crimson"> {{ paq.sign_id }}</b>&emsp;
+                借款订单id:<b style="color:Crimson"> {{ paq.borrow_id }}</b>&emsp;
+                借款订单号:<b style="color:Crimson"> {{ paq.borrow_order_no }}</b>&emsp;
+                保险产品代码:<b style="color:Crimson"> {{ paq.policy_product_code }}</b>&emsp;
+                保险经纪公司编号:<b style="color:Crimson"> {{ paq.insurance_broker_no }}</b>&emsp;
+                保单申请编号:<b style="color:Crimson"> {{ paq.p_request_no }}</b><br>
+                保单生效时间:{{ paq.effective_date }}&emsp;
+                保单份数:{{ paq.insurance_num }}&emsp;
+                保期数:{{ paq.insurance_period_num }}&emsp;
+                总保费:{{ paq.total_premium }}&emsp;
+                保单号:{{ paq.policy_no }}&emsp;
+                保单申请状态:<b style="color:Crimson"> {{ paq.policy_apply_status }}|
+                {% if paq.policy_apply_status == -1 %}初始化{% elif paq.policy_apply_status == 0 %}保单申请失败
+                {% elif paq.policy_apply_status == 1 %}保单申请成功
+                {% else %}未知{% endif %}</b>&emsp;
+                保单申请时间:{{ paq.policy_apply_time }}&emsp;
+                扣款状态:<b style="color:Crimson"> {{ paq.deduct_status }}|
+                {% if paq.deduct_status == -1 %}初始化{% elif paq.deduct_status == 0 %}失败(最终失败状态)
+                {% elif paq.deduct_status == 1 %}成功{% elif paq.deduct_status == 2 %}处理中
+                {% else %}未知{% endif %}</b>&emsp;
+                扣款请求时间:{{ paq.deduct_request_time }}&emsp;
+                保单状态:<b style="color:Crimson"> {{ paq.policy_status }}|
+                {% if paq.policy_status == -2 %}取消（包含申请失败，审核失败，扣款失败）
+                {% elif paq.policy_status == -1 %}未生成(未发起申请、申请成功、扣款处理中)
+                {% elif paq.policy_status == 0 %}生成中（扣款成功但未出单）{% elif paq.policy_status == 1 %}生成成功
+                {% else %}未知{% endif %}</b><br>
+                三方返回的扣款状态:<b style="color:Crimson"> {{ paq.pay_status }}|
+                {% if paq.pay_status == -1 %}初始化{% elif paq.pay_status == 0 %}失败
+                {% elif paq.pay_status == 1 %}成功{% elif a == 2 %}不明确（相当于处理中）
+                {% elif a == 9 %}未扣款（相当于失败）
+                {% else %}未知{% endif %}</b>&emsp;
+                三方返回的扣款时间:{{ paq.pay_time }}&emsp;
+                三方返回的保单确认状态:<b style="color:Crimson"> {{ paq.confirm_status }}|
+                {% if paq.confirm_status == -1 %}初始化{% elif paq.confirm_status == 0 %}失败
+                {% elif paq.confirm_status == 1 %}成功{% elif paq.confirm_status == 9 %}未确认（相当于出单中）
+                {% else %}未知{% endif %}</b>&emsp;
+                三方返回的保单确认时间:{{ paq.confirm_time }}&emsp;
+                错误代码:<b style="color:Crimson"> {{ paq.error_code }}</b>&emsp;
+                错误描述:<b style="color:Crimson"> {{ paq.error_msg }}</b>&emsp;
+                创建时间:{{ paq.gmt_create }}<br>
+            {% endfor %}
+        </p>
+    {% else %}
+        <p>未生成保单申请表</p>
+    {% endif %}
+    {% if showmqc %}
+        {{ show_sql_str_mq_record_credit }}<br>
+        {% for mqc in showmqc %}
+            <b style="color:Crimson"> 此条mq为此用户第一条非全部，可能不对应，分析需谨慎</b><br>
+            {{ mqc.id }}&emsp;
+            主题:<b style="color:#dc9706"> {{ mqc.topic }}</b>&emsp;
+            消息主键:<b style="color:Crimson"> {{ mqc.msg_keys }}</b><br>
+            标签:{{ mqc.tags }}&emsp;
+            重试次数:<b style="color:Crimson"> {{ mqc.retry_count }}</b>&emsp;
+            备注:{{ mqc.remark }}&emsp;
+            创建时间:<b style="color:#ad17dc"> {{ mqc.gmt_create }}</b>&emsp;
+            更新时间:<b style="color:Crimson"> {{ mqc.gmt_modified }}</b>&emsp;
+            发送状态:{{ mqc.state }}&emsp;
+            <input name="mq_record_credit_id" type="hidden" id="mq_record_credit_id" value= {{ mqc.id }} placeholder="编号">
+            <button class="update_mq_record_credit">提速</button><br>
+            消息体:<b style="color:#2f00dc"> {{ mqc.body }}</b><br>
+        {% endfor %}
+    {% else %}
+        <p>未生成mq信息c</p>
+    {% endif %}
+    {% if showmqf %}
+        {{ show_sql_str_mq_record_fico }}<br>
+        {% for mqf in showmqf %}
+            {{ mqf.id }}&emsp;
+            主题:<b style="color:#dc9706"> {{ mqf.topic }}</b>&emsp;
+            消息主键:<b style="color:Crimson"> {{ mqf.msg_keys }}</b><br>
+            标签:{{ mqf.tags }}&emsp;
+            重试次数:<b style="color:Crimson"> {{ mqf.retry_count }}</b>&emsp;
+            备注:{{ mqf.remark }}&emsp;
+            创建时间:<b style="color:#ad17dc"> {{ mqf.gmt_create }}</b>&emsp;
+            更新时间:<b style="color:Crimson"> {{ mqf.gmt_modified }}</b>&emsp;
+            发送状态:{{ mqf.state }}&emsp;
+            <input name="mq_record_fico_id" type="hidden" id="mq_record_fico_id" value= {{ mqf.id }} placeholder="编号">
+            <button class="update_mq_record_fico">提速</button><br>
+            消息体:<b style="color:#2f00dc"> {{ mqf.body }}</b><br>
+        {% endfor %}
+    {% else %}
+        <p>未生成mq信息f</p>
+    {% endif %}
+    {% if showmql %}
+        {{ show_sql_str_mq_record_loan }}<br>
+        {% for mql in showmql %}
+            {{ mql.id }}&emsp;
+            主题:<b style="color:#dc9706"> {{ mql.topic }}</b>&emsp;
+            消息主键:<b style="color:Crimson"> {{ mql.msg_keys }}</b><br>
+            标签:{{ mql.tags }}&emsp;
+            重试次数:<b style="color:Crimson"> {{ mql.retry_count }}</b>&emsp;
+            备注:{{ mql.remark }}&emsp;
+            创建时间:<b style="color:#ad17dc"> {{ mql.gmt_create }}</b>&emsp;
+            更新时间:<b style="color:Crimson"> {{ mql.gmt_modified }}</b>&emsp;
+            发送状态:{{ mql.state }}&emsp;
+            <input name="mq_record_loan_id" type="hidden" id="mq_record_loan_id" value= {{ mql.id }} placeholder="编号">
+            <button class="update_mq_record_loan">提速</button><br>
+            消息体:<b style="color:#2f00dc"> {{ mql.body }}</b><br>
+        {% endfor %}
+    {% else %}
+        <p>未生成mq信息l</p>
+    {% endif %}
+    {% if showcallback %}
+        {{ show_sql_str_notify_callback }}<br>
+        {% for cb in showcallback %}
+            <p>
+                类型:<b style="color:Crimson"> {{ cb.nc_type }}</b>&emsp;
+                回调url:<b style="color:Crimson"> {{ cb.nc_url }}</b>&emsp;
+                回调类型:<b style="color:Crimson"> {{ cb.nc_source }}</b>&emsp;
+                发送状态:<b style="color:Crimson"> {{ cb.nc_send_status }}|
+                {% if cb.nc_send_status == 0 %}未发送{% elif cb.nc_send_status == 1 %}准备发送
+                {% elif cb.nc_send_status == 2 %}已发送{% elif cb.nc_send_status == 3 %}未就绪
+                {% else %}未知{% endif %}</b>&emsp;
+                <input name="cl_notify_callback_id" type="hidden" id="cl_notify_callback_id" value= {{ cb.nc_id }} placeholder="编号">
+                <button class="update_cl_notify_callback">提速</button>
+                <input name="cl_notify_callback_re_id" type="hidden" id="cl_notify_callback_re_id" value= {{ cb.nc_id }} placeholder="编号_re">
+                <button class="update_cl_notify_callback_re">重试</button><br>
+                创建时间:<b style="color:Crimson"> {{ cb.nc_create_time }}</b>&emsp;
+                更新时间:<b style="color:Crimson"> {{ cb.nc_modify_time }}</b>&emsp;
+                外键id:{{ cb.nc_entry_id }}&emsp;
+                回调请求次数:<b style="color:Crimson"> {{ cb.nc_execute_num }}</b>&emsp;
+                请求下次执行时间:<b style="color:Crimson"> {{ cb.nc_next_time }}</b><br>
+                response:<b style="color:#2f00dc"> {{ cb.nc_respon }}</b><br>
+                回调参数:<br>{{ cb.nc_param }}<br>
+            </p>
+        {% endfor %}
+    {% else %}
+        <p>未生成callback</p>
+    {% endif %}
+    {% if showrrcs %}
+        <p>
+            {{ show_sql_str_req_record_credit_sign }}<br>
+            {% for rrcs in showrrcs %}
+                签章:{{ rrcs.biz_type }}&emsp;
+                合同类型:<b style="color:Crimson"> {{ rrcs.third_party_code }}|
+                {% if rrcs.third_party_code == '10' %}征信客户授权书{% elif rrcs.third_party_code == '11' %}委托担保申请
+                {% else %}未知{% endif %}</b>
+                用户id:<b style="color:Crimson"> {{ rrcs.user_id }}</b>&emsp;
+                产品id:<b style="color:Crimson"> {{ rrcs.product_id }}</b>&emsp;
+                订单id:<b style="color:Crimson"> {{ rrcs.borrow_id }}</b>&emsp;
+                借款订单号:<b style="color:Crimson"> {{ rrcs.order_no }}</b>&emsp;
+                请求单号:<b style="color:Crimson"> {{ rrcs.request_no }}</b>&emsp;
+                合同编号:<b style="color:Crimson"> {{ rrcs.third_party_order_no }}</b><br>
+                请求时间:{{ rrcs.request_time }}&emsp;
+                签章状态:<b style="color:Crimson"> {{ rrcs.biz_state }}|
+                {% if rrcs.biz_state == '0' %}初始化{% elif rrcs.biz_state == '10' %}待签章
+                {% elif rrcs.biz_state == '20' %}签章申请中{% elif rrcs.biz_state == '30' %}已签章
+                {% elif rrcs.biz_state == '40' %}签章失败{% elif rrcs.biz_state == '60' %}已归档
+                {% else %}未知{% endif %}</b>
+                创建时间:{{ rrcs.gmt_create }}&emsp;
+                更新时间:{{ rrcs.gmt_modified }}<br>
+                请求{{ rrcs.request_params }}<br>
+            {% endfor %}
+        </p>
+    {% else %}
+        <p>未生成征信签章</p>
+    {% endif %}
+    {% if showpir %}
+        {{ show_sql_str_product_interest_rate }}<br>
+        {% for pir in showpir %}
+            利息收取账户<b style="color:Crimson"> {{ pir.interest_receive_account }}</b>&emsp;
+            还款方式:<b style="color:Crimson"> {{ pir.repay_way }}|
+            {% if pir.repay_way == 1 %}主动还款{% elif pir.repay_way == 2 %}系统代扣
+            {% elif pir.repay_way == 3 %}催收扣款{% elif pir.repay_way == 4 %}补扣
+            {% elif pir.repay_way == 5 %}退还{% else %}未知{% endif %}</b>&emsp;
+            分期数{{ pir.phase_num }}&emsp;
+            资金方代码<b style="color:Crimson"> {{ pir.fund_code }}</b><br>
+        {% endfor %}
+    {% else %}
+        <p>查不到产品利率表</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,17 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ environment }}>>>三方订单号 third_order_no</h1>
+    <form action="" method="post" name="third_order_no">
+        {{ form.hidden_tag() }}
+        <p>
+            老板想查啥（third_order_no）:<br>
+            {{ form.orderno(size=80) }}<br>
+            {% for error in form.orderno.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}<br>
+        </p>
+        <p><input type="submit" value="search"></p>
+    </form>
+{% endblock %}

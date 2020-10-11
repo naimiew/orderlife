@@ -1,0 +1,52 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+{% block content %}
+    <h1>{{ environment }}>>>用户资料 id_no_info</h1>
+    {% if showcl %}
+        {{ show_sql_str_can_loan }}<br>
+        {% for cl in showcl %}
+            <span>
+                用户ID:{{ cl.user_id }}&emsp;
+                身份证号:{{ cl.id_no }}&emsp;
+                平台编码:{{ cl.platform_code }}||{{ cl.product_id }}||{{ cl.cppc }}||{{ cl.product_code }}||{{ cl.product_name }}&emsp;
+                类别编码:{{ cl.category_code }}【1pd2分期】&emsp;
+                可贷日期:{{ cl.can_loan_date }}&emsp;
+                可贷日期时间戳形式:{{ cl.can_loan_date_timestamp }}&emsp;
+                创建时间:{{ cl.gmt_create }}&emsp;
+            {% if cl.can_loan_date >= cl.date_now and  cl.can_loan_date_timestamp >= cl.timestamp_now %}
+                <form action="" method="post" name="updata_cl" style="display: inline-block">
+                    <input type="submit" name="updata_cl" value=置可借(待开发)>
+                </form>
+            {% else %}
+                <form action="" method="post" name="updata_cl" style="display: inline-block">
+                    <input type="submit" name="updata_cl" value=置不可借(待开发)>
+                </form>
+            {% endif %}
+            </span>
+        {% endfor %}
+    {% else %}
+        <p>行为良好，继续努力</p>
+    {% endif %}
+    {% if showini %}
+        {{ show_sql_str_id_no }}<br>
+        {% for foo in showini %}
+             <form action="userinfo" method="post" name="user_id">
+                <p>
+                    用户编号user_id:<input type="submit" name="userinfo" value={{ foo.user_id }}>&emsp;&emsp;
+                    创建时间create_time:{{ foo.create_time }}&emsp;&emsp;
+                    真名:{{ foo.real_name }}<br>
+                    手机号码:<b style="color:#dc143c">{{ foo.phone }}</b>,&emsp;&emsp;&emsp;
+                    用户来源source:<b style="color:Crimson">{{ foo.source }}||{{ foo.product_code }}||{{ foo.product_name }}</b><br>
+                    身份证号id_no:{{ foo.id_no }},&emsp;
+                    md5(手机号+身份证号):{{ foo.phone_idno_md5 }}<br></p>
+                    人脸living_img:{{ foo.living_img }}<br>
+                    头像ocr_img:{{ foo.ocr_img }}<br>
+                    正面front_img:{{ foo.front_img }}<br>
+                    反面back_img:{{ foo.back_img }}<br>
+                <p>👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆</p>
+            </form>
+        {% endfor %}
+    {% else %}
+        <p>无此用户</p>
+    {% endif %}
+{% endblock %}

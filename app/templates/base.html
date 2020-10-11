@@ -1,0 +1,26 @@
+<html>
+<head>
+    {% if title %}
+        <title>{{ title }} - OL</title>
+    {% else %}
+        <title>orderlife</title>
+    {% endif %}
+</head>
+<body>
+<div>身份证: <a href="/searchidno">searchidno</a></div>
+<div>🌑🌒🌓🌔🌝🌖🌗🌘🌚</div>
+<div>三方订单: <a href="/searchtono">searchtono</a></div>
+<hr>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }} </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+{% block content %}{% endblock %}
+</body>
+</html>
+
